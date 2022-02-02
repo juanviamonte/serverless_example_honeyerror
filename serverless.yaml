@@ -1,0 +1,55 @@
+service: "a-service"
+frameworkVersion: "3"
+package:
+  individually: true
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+  region: "${opt:region, self:provider.region}"
+  prefix: "${self:service}-${self:custom.stage}"
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - "aws-sdk"
+    target: "node14"
+    define: {}
+    platform: "node"
+  serverless-offline:
+    httpPort: 3003
+plugins:
+  - "serverless-esbuild"
+  - "serverless-offline"
+  - "serverless-dotenv-plugin"
+provider:
+  name: "aws"
+  timeout: 30
+  stage: "localhost"
+  runtime: "nodejs14.x"
+  region: "us-east-1"
+  apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000"
+    REGION: "${self:custom.region}"
+    STAGE: "${self:custom.stage}"
+    DYNAMODB_LOCAL_ENDPOINT: "http://localhost:8000"
+  lambdaHashingVersion: "20201221"
+functions:
+  fn:
+    handler: "src/functions/fn/handler.main"
+    timeout: 30
+    events:
+      - http:
+          method: "post"
+          path: "/test"
+          request:
+            schema:
+              application/json:
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+resources: {}
