@@ -10,6 +10,7 @@ $ `yarn start`
 $ npm i -g serverless or yarn add serverless
 
 3. After yarn start success:
+```
 
    ┌──────────────────────────────────────────────────────────────────────┐
    │                                                                      │
@@ -20,7 +21,7 @@ $ npm i -g serverless or yarn add serverless
 
 Server ready: http://localhost:3003 🚀
 
-
+```
 4. Use postman or other HTTP Client to interact
 
 (Set empty {}) body in JSON format for the request
